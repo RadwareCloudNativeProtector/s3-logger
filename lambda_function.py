@@ -5,12 +5,19 @@ import random
 import string
 import os
 
-# Declare environment variables
+# Declare environment variables and load from Lambda
 s3_bucket_for_logging = os.environ.get("s3_bucket_for_logging")
 queue_url = os.environ.get("queue_url")
 log_folder_prefix = os.environ.get("log_folder_prefix")
 log_object_prefix = os.environ.get("log_object_prefix")
 gzip_enabled = os.environ.get("gzip_enabled")
+
+# Cleanup environment variables with bad trailing characters
+if log_folder_prefix[-1] == '/':
+    log_folder_prefix = log_folder_prefix[0:len(log_folder_prefix)-1]
+
+if log_object_prefix[-1] == '_':
+    log_object_prefix = log_object_prefix[0:len(log_object_prefix) - 1]
 
 
 def process_messages():
@@ -28,8 +35,7 @@ def process_messages():
     except sqs_client.exceptions.QueueDoesNotExist as e:
         print(f"QueueDoesNotExist: {e}")
         sys.exit(1)
-    except:
-        e = sys.exc_info()[0]
+    except Exception as e:
         print(f'Unexpected error from SQS client: {e}')
         sys.exit(1)
 
@@ -38,7 +44,8 @@ def process_messages():
     if queue_size > 0:
         print(f"Queue Size: {queue_size}")
     else:
-        print("Queue is empty. Exiting...")
+        print("Queue is empty. Finalizing and generating report...")
+        # Return report content
         return {'queue_size': 0, 'batches': 0, 'processed_messages': 0, 'avg_batch_size': 0}
 
     if gzip_enabled.lower() in ['true', '1', 't', 'y', 'yes']:
@@ -77,9 +84,9 @@ def process_messages():
                 # Prepare S3 key
                 log_timestamp = time.gmtime(int(msg['Attributes']['SentTimestamp']) / 1000.)
                 s3_log_folder = f"{log_folder_prefix}/{log_timestamp.tm_year}/{log_timestamp.tm_mon}/{log_timestamp.tm_mday}/"
-                # Generate 8 character alphanumeric string
-                alphanum_key = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-                s3_object_name = f"{log_timestamp.tm_year}{log_timestamp.tm_mon}{log_timestamp.tm_mday}T{log_timestamp.tm_hour}{log_timestamp.tm_min}{log_timestamp.tm_sec}Z_{alphanum_key}.{object_ext}"
+                # Generate 16 character alphanumeric string for object name suffix
+                alphanum_key = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+                s3_object_name = f"{log_object_prefix}_{log_timestamp.tm_year}{log_timestamp.tm_mon}{log_timestamp.tm_mday}T{log_timestamp.tm_hour}{log_timestamp.tm_min}Z_{alphanum_key}.{object_ext}"
 
                 if gzip_enabled.lower() in ['true', '1', 't', 'y', 'yes']:
                     # Compress message body
@@ -96,8 +103,7 @@ def process_messages():
                         ContentType=object_content_type
                         #Tagging=f"source=Radware_CWP&timestamp={msg['Timestamp']}"
                     )
-                except:
-                    e = sys.exc_info()[0]
+                except Exception as e:
                     print(f'Unexpected error from S3 client: {e}')
                     break
 
@@ -107,17 +113,18 @@ def process_messages():
                         QueueUrl=queue_url,
                         ReceiptHandle=msg['ReceiptHandle']
                     )
-                except:
-                    e = sys.exc_info()[0]
+                except Exception as e:
                     print(f'Unexpected error from SQS client: {e}')
                     break
 
+            # Add message total of this batch to report
             processed_msg_count += len(msg_batch['Messages'])
 
         else:
-            print("Batch size of 0 or empty queue. Finishing process...")
+            print("Batch size of 0. Finalizing and generating report...")
             break
 
+    # Return report content
     return {'queue_size': queue_size, 'batches': batch, 'processed_messages': processed_msg_count, 'avg_batch_size': round((processed_msg_count / batch), 3)}
 
 
