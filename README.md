@@ -23,7 +23,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 
 ### [Option 1] One-click CFT Deployment:
 [<img src="docs/pictures/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=RadwareCWP-S3-Logger&templateURL=https://radware-cwp-devops-us-east-1.s3.amazonaws.com/radware_cwp_s3_logger/radware_cwp_s3_logger_cftemplate.yaml)
-> Note: The AWS region you are actively logged into will be the region of deployment.
+> Note: One-click CFT deployment currently works for regions: us-east-1, us-east-2, us-west-1, us-west-2, ca-central-1. The AWS region you are actively logged into will be the region of deployment.
 1. Fill in the parameter fields. 
 1. Click **Next** twice.
 1. Under **Capabilities and transforms**, click to check the **3** pending acknowledgements: "_I acknowledge..._".
