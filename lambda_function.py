@@ -14,10 +14,10 @@ gzip_enabled = os.environ.get("gzip_enabled")
 
 # Cleanup environment variables with bad trailing characters
 if log_folder_prefix[-1] == '/':
-    log_folder_prefix = log_folder_prefix[0:len(log_folder_prefix)-1]
+    log_folder_prefix = log_folder_prefix[0:(len(log_folder_prefix) - 1)]
 
 if log_object_prefix[-1] == '_':
-    log_object_prefix = log_object_prefix[0:len(log_object_prefix) - 1]
+    log_object_prefix = log_object_prefix[0:(len(log_object_prefix) - 1)]
 
 
 def process_messages():
