@@ -5,7 +5,7 @@ This AWS tool was designed to consume logs pushed from Radware CWP and then writ
 
 <img src="docs/pictures/Radware_CWP_S3_Logger.jpg">
 
-The CFT deployment process will create an SNS Topic, SQS Queue, an IAM Role, and a Lambda Function. On the defined schedule, SQS messages are polled and then written to an S3 bucket. Additional triggers and schedules can be configured post-deployment as desired. 
+The CFT deployment process will create an SNS Topic, SQS Queue, an IAM Role, CloudWatch Log Group (default 30 days retention), and a Lambda Function. On the defined schedule, SQS messages are polled and then written to an S3 bucket. Additional triggers and schedules can be configured post-deployment as desired. 
 
 ## Setup
 ### Prerequisites
@@ -38,7 +38,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 1. Click **Next** twice.
 1. Under **Capabilities and transforms**, click to check the **3** pending acknowledgements: "_I acknowledge..._". (or use "--capabilities CAPABILITY_IAM" if using the AWS CLI.)
 1. Click **Create stack**.
-1. After the process finished view the **Outputs** tab. The **InputTopicARN** value will be needed for the next step in the CWP console.
+1. After the process finished view the **Outputs** tab. The **InputTopicARN** value will be needed for the next step in the Radware CWP console.
 
 ## Post-Deployment Steps
 
@@ -64,8 +64,8 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 1. Log into **Radware CWP** and then click **Settings** > **Manage Cloud Accounts** from the menu at the top. 
 1. Find the AWS cloud account you want to get alerts from in the list, click **Activate** under the **Automated Response** column.
 1. In the **Activate Automated Response** dialogue box, under step 2, paste the **InputTopicARN** value from the CFT deployment process. 
-1. Click **Activate**
-1. All done!
+1. Click **Activate**.
+All done!
 
 ## Testing
 The Lambda Function is scheduled to run every two minutes. If you would like to run manual tests configure a test event in the lambda function (An event of `{}` is sufficient).
