@@ -29,7 +29,7 @@ Parameters:
     Type: String
   LogObjectPrefix:
     Default: 'CWPAlerts'
-    Description: 'REQUIRED - Log Object Prefix. Context: <Log-File-Prefix>_YYYYMMDDTHHMMZ_<Alphanumeric-String>.log'
+    Description: 'REQUIRED - Log Object Prefix. Context: <Log-File-Prefix>_YYYYMMDDTHHMMZ_<Alphanumeric-String>.json'
     Type: String
   GzipEnabled:
     Default: 'true'
