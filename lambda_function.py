@@ -4,6 +4,7 @@ import time
 import random
 import string
 import os
+import json
 
 # Declare environment variables and load from Lambda
 s3_bucket_for_logging = os.environ.get("s3_bucket_for_logging")
@@ -88,16 +89,20 @@ def process_messages():
                 alphanum_key = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
                 s3_object_name = f"{log_object_prefix}_{log_timestamp.tm_year}{log_timestamp.tm_mon}{log_timestamp.tm_mday}T{log_timestamp.tm_hour}{log_timestamp.tm_min}Z_{alphanum_key}.{object_ext}"
 
+                # Format message
+                this_msg = json.loads(msg['Body'])
+                this_msg = json.loads(this_msg['Message'])['Message']
+
                 if gzip_enabled.lower() in ['true', '1', 't', 'y', 'yes']:
                     # Compress message body
-                    msg_body = zlib.compress(bytes(msg['Body'], 'utf-8'))
+                    msg_body = zlib.compress(bytes(this_msg), 'utf-8')
                 else:
-                    msg_body = msg['Body']
+                    msg_body = this_msg
 
                 try:
                     # Write log file to S3
                     s3_client.put_object(
-                        Body=msg_body,
+                        Body=this_msg,
                         Bucket=s3_bucket_for_logging,
                         Key=s3_log_folder + s3_object_name,
                         ContentType=object_content_type

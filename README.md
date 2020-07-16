@@ -1,7 +1,7 @@
 # Radware CWP S3 Logger
 #### _A Log Source for SIEM Tools, etc._
 
-This AWS tool was designed to consume logs pushed from Radware CWP and then write compressed files to AWS S3 for use cases such as downstream consumption by SIEM tools (e.g. IBM QRadar). Once logs are archived to S3, all S3-compatible tools can then consume them. 
+This open source AWS tool was designed to consume the detected security findings from Radware CWP and then write compressed files to AWS S3 for use cases such as downstream consumption by SIEM tools (e.g. IBM QRadar). Once logs are archived to S3, all S3-compatible tools can then consume them. If necessary, the findings from Radware CWP may be reformatted in the script to meet the data model requirements of any downstream tools.
 
 <img src="docs/pictures/Radware_CWP_S3_Logger.jpg">
 
