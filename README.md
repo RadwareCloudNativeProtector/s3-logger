@@ -18,7 +18,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 
 - **S3BucketForLogging** - Target S3 Bucket for Logs (e.g. `MyS3BucketName`).
 - **LogFolderPrefix** - Log Folder Prefix. Context: `s3://S3BucketName/<Log-Folder-Prefix>/...`
-- **LogObjectPrefix** - Log Object Prefix. Context: `<Log-File-Prefix>_YYYYMMDDTHHMMZ_<Alphanumeric-String>.json`
+- **LogObjectPrefix** - Log Object Prefix. Context: `<Log-Object-Prefix>_YYYYMMDDTHHMMZ_<Alphanumeric-String>.json`
 - **GzipEnabled** - Enable/disable gzip compression of log files. (e.g. `true` or `false`)
 
 ### [Option 1] One-click CFT Deployment:
@@ -43,7 +43,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 ## Post-Deployment Steps
 
 ### 1. Verify Lambda Execution Role Permissions
-* Ensure the Lambda Execution role has permissions to put objects in the S3 bucket specified in parameter **S3BucketForLogging**. This is done for you automatically during CFT deployment, however is is best to verify this configuration works for you.
+* Ensure the Lambda Execution role has permissions to put objects in the S3 bucket specified in parameter **S3BucketForLogging**. This is done for you automatically during CFT deployment, however it is best practice to verify this configuration works for you.
 
 ```
 {
