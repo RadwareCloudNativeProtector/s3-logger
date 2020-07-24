@@ -35,10 +35,11 @@ def process_messages():
         )
     except sqs_client.exceptions.QueueDoesNotExist as e:
         print(f"QueueDoesNotExist: {e}")
-        sys.exit(1)
+        raise e
+
     except Exception as e:
         print(f'Unexpected error from SQS client: {e}')
-        sys.exit(1)
+        raise e
 
     queue_size = int(queue_attrib['Attributes']['ApproximateNumberOfMessages'])
 
@@ -91,26 +92,25 @@ def process_messages():
 
                 # Format message
                 this_msg = json.loads(msg['Body'])
-                this_msg = json.loads(this_msg['Message'])['Message']
+                this_msg = this_msg['Message']
 
                 if gzip_enabled.lower() in ['true', '1', 't', 'y', 'yes']:
                     # Compress message body
-                    msg_body = zlib.compress(bytes(this_msg), 'utf-8')
+                    msg_body = zlib.compress(bytes(this_msg, 'utf-8'))
                 else:
                     msg_body = this_msg
 
                 try:
                     # Write log file to S3
                     s3_client.put_object(
-                        Body=this_msg,
+                        Body=msg_body,
                         Bucket=s3_bucket_for_logging,
                         Key=s3_log_folder + s3_object_name,
                         ContentType=object_content_type
-                        #Tagging=f"source=Radware_CWP&timestamp={msg['Timestamp']}"
                     )
                 except Exception as e:
                     print(f'Unexpected error from S3 client: {e}')
-                    break
+                    raise e
 
                 try:
                     # Delete processed message from queue
@@ -120,7 +120,7 @@ def process_messages():
                     )
                 except Exception as e:
                     print(f'Unexpected error from SQS client: {e}')
-                    break
+                    raise e
 
             # Add message total of this batch to report
             processed_msg_count += len(msg_batch['Messages'])
