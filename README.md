@@ -18,7 +18,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 
 - **S3BucketForLogging** - Target S3 Bucket for Logs (e.g. `MyS3BucketName`).
 - **LogFolderPrefix** - Log Folder Prefix. Context: `s3://S3BucketName/<Log-Folder-Prefix>/...`
-- **LogObjectPrefix** - Log Object Prefix. Context: `<Log-File-Prefix>_YYYYMMDDTHHMMZ_<Alphanumeric-String>.json`
+- **LogObjectPrefix** - Log Object Prefix. Context: `<Log-Object-Prefix>_YYYYMMDDTHHMMZ_<Alphanumeric-String>.json`
 - **GzipEnabled** - Enable/disable gzip compression of log files. (e.g. `true` or `false`)
 
 ### [Option 1] One-click CFT Deployment:
@@ -31,10 +31,14 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 1. After the process finished view the **Outputs** tab. The **InputTopicARN** value will be needed for the next step in the CWP console.
 
 ### [Option 2] Manual CFT Deployment:
+1. Download the contents of this repo.
+1. Add `lambda_function.py` into the root of a zip file (e.g. `myfunction.zip`).
+1. Upload the zip file to an S3 bucket 
+1. Modify `radware_cwp_s3_logger_cftemplate.yaml` lines `105` and `111` and enter values for `bucket` and `key` (zip file), respectively. Remove lines `106-110`.
 1. Login to the AWS console, select a region, and navigate to CloudFormation. 
 1. Click **Create stack**
 1. Under **Specify template**, click **Upload a template file**
-1. Click the **Choose file** button and upload the CFT from this repo.
+1. Click the **Choose file** button and upload the modified CFT.
 1. Click **Next** twice.
 1. Under **Capabilities and transforms**, click to check the **3** pending acknowledgements: "_I acknowledge..._". (or use "--capabilities CAPABILITY_IAM" if using the AWS CLI.)
 1. Click **Create stack**.
@@ -43,7 +47,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 ## Post-Deployment Steps
 
 ### 1. Verify Lambda Execution Role Permissions
-* Ensure the Lambda Execution role has permissions to put objects in the S3 bucket specified in parameter **S3BucketForLogging**. This is done for you automatically during CFT deployment, however is is best to verify this configuration works for you.
+* Ensure the Lambda Execution role has permissions to put objects in the S3 bucket specified in parameter **S3BucketForLogging**. This is done for you automatically during CFT deployment, however it is best practice to verify this configuration works for you.
 
 ```
 {
