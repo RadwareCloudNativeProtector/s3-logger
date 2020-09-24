@@ -5,7 +5,7 @@ This open source AWS tool was designed to consume the detected security findings
 
 <img src="docs/pictures/Radware_CWP_S3_Logger.jpg">
 
-The CFT deployment process will create an SNS Topic, SQS Queue, an IAM Role, CloudWatch Log Group (default 30 days retention), and a Lambda Function. On the defined schedule, SQS messages are polled and then written to an S3 bucket. Additional triggers and schedules can be configured post-deployment as desired. 
+The CFT deployment process will create an SNS Topic, SQS Queue, an IAM Role, CloudWatch Log Group (default 90 days retention), and a Lambda Function. On the defined schedule, SQS messages are polled and then written to an S3 bucket. Additional triggers and schedules can be configured post-deployment as desired. 
 
 ## Setup
 ### Prerequisites

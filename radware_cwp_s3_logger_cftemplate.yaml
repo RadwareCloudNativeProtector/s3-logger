@@ -97,7 +97,7 @@ Resources:
       TopicArn: 
         Ref: InputTopic
     Type: AWS::SNS::Subscription
-  CWPS3LoggerFunction:
+  Solution:
     DependsOn: 
       - LogsQueue
     Properties:
@@ -158,6 +158,6 @@ Resources:
   LambdaLogsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub "/aws/lambda/${CWPS3LoggerFunction}"
-      RetentionInDays: 30
+      LogGroupName: !Sub "/aws/lambda/${Solution}"
+      RetentionInDays: 90
 Transform: AWS::Serverless-2016-10-31
