@@ -3,7 +3,7 @@
 
 This open source AWS tool was designed to consume the detected security findings from Radware CNP and then write compressed files to AWS S3. From there, SIEM tools, such as IBM QRadar, or any other tool which supports S3, can ingest the CNP findings. If necessary, the findings from Radware CNP may be reformatted in the script to meet the data model requirements of any downstream tool.
 
-<img src="docs/pictures/Radware_CNP_S3_Logger.jpg">
+<img src="docs/pictures/Radware_CWP_S3_Logger.jpg">
 
 The CFT deployment process will create an SNS Topic, SQS Queue, an IAM Role, CloudWatch Log Group (default 90 days retention), and a Lambda Function. On the defined schedule, SQS messages are polled and then written to an S3 bucket. Additional triggers and schedules can be configured post-deployment as desired. 
 
