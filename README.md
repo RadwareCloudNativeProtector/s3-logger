@@ -1,7 +1,7 @@
-# Radware CWP S3 Logger
+# Radware CNP S3 Logger
 #### _A Log Source for SIEM Tools, etc._
 
-This open source AWS tool was designed to consume the detected security findings from Radware CWP and then write compressed files to AWS S3. From there, SIEM tools, such as IBM QRadar, or any other tool which supports S3, can ingest the CWP findings. If necessary, the findings from Radware CWP may be reformatted in the script to meet the data model requirements of any downstream tool.
+This open source AWS tool was designed to consume the detected security findings from Radware CNP and then write compressed files to AWS S3. From there, SIEM tools, such as IBM QRadar, or any other tool which supports S3, can ingest the CNP findings. If necessary, the findings from Radware CNP may be reformatted in the script to meet the data model requirements of any downstream tool.
 
 <img src="docs/pictures/Radware_CWP_S3_Logger.jpg">
 
@@ -28,7 +28,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 1. Click **Next** twice.
 1. Under **Capabilities and transforms**, click to check the **3** pending acknowledgements: "_I acknowledge..._".
 1. Click **Create stack**.
-1. After the process finished view the **Outputs** tab. The **InputTopicARN** value will be needed for the next step in the CWP console.
+1. After the process finished view the **Outputs** tab. The **InputTopicARN** value will be needed for the next step in the CNP console.
 
 ### [Option 2] Manual CFT Deployment:
 1. Download the contents of this repo.
@@ -42,7 +42,7 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 1. Click **Next** twice.
 1. Under **Capabilities and transforms**, click to check the **3** pending acknowledgements: "_I acknowledge..._". (or use "--capabilities CAPABILITY_IAM" if using the AWS CLI.)
 1. Click **Create stack**.
-1. After the process finished view the **Outputs** tab. The **InputTopicARN** value will be needed for the next step in the Radware CWP console.
+1. After the process finished view the **Outputs** tab. The **InputTopicARN** value will be needed for the next step in the Radware CNP console.
 
 ## Post-Deployment Steps
 
@@ -64,8 +64,8 @@ This CFT stack has 5 parameters, 4 of which are configured during deployment:
 }
 ```
 
-### 2. Radware CWP Setup:
-1. Log into **Radware CWP** and then click **Settings** > **Manage Cloud Accounts** from the menu at the top. 
+### 2. Radware CNP Setup:
+1. Log into **Radware CNP** and then click **Settings** > **Manage Cloud Accounts** from the menu at the top. 
 1. Find the AWS cloud account you want to get alerts from in the list, click **Activate** under the **Automated Response** column.
 1. In the **Activate Automated Response** dialogue box, under step 2, paste the **InputTopicARN** value from the CFT deployment process. 
 1. Click **Activate**.
