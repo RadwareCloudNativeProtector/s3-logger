@@ -13,11 +13,8 @@ Outputs:
     Value: 
       Fn::GetAtt: 
         - LogsQueue
-        - Arn        
-  S3LoggerLambdaFunction: 
-    Description: 'Name of the Lambda Function created'
-    Value: 
-      Ref: CWPS3LoggerFunction
+        - Arn      
+    
 Parameters:
   S3BucketForLogging:
     Default: '<S3-Bucket-Name-Here>'
@@ -35,6 +32,14 @@ Parameters:
     Default: 'true'
     Description: 'REQUIRED - Enable/disable gzip compression of log files. true/false'
     Type: String
+  CNPAccountId:
+    Description: The automated response Radware account ID to send publish notifications to. specified at the portal under Settings -> Cloud Accounts -> (Automated response) Activate
+    AllowedPattern: '[0-9]*'
+    MinLength: '12'
+    MaxLength: '12'
+    Type: String
+    Default: '438643506655'
+    
 Resources:
   InputTopic:
     Type: AWS::SNS::Topic
@@ -46,7 +51,8 @@ Resources:
         - Action: sns:Publish
           Effect: Allow
           Principal:
-            AWS: arn:aws:iam::342443945406:root
+            #AWS: arn:aws:iam::342443945406:root
+            AWS: !Join [ '' , [ 'arn:aws:iam::' , !Ref CNPAccountId , ':root'] ]
           Resource:
             Ref: InputTopic
           Sid: CwpSnsPolicy
@@ -102,11 +108,7 @@ Resources:
       - LogsQueue
     Properties:
       CodeUri: 
-        Bucket: 
-          Fn::Join:
-          - ''
-          - - 'radware-cwp-devops-'
-            - !Ref 'AWS::Region'
+        Bucket: !Join [ '' , [ 'cnp-public-' , !Ref AWS::Region ] ]
           # If deploying CFT manually, replace this join with a string (e.g. "Bucket: my-custom-bucket-name"
         Key: 'radware_cwp_s3_logger/radware_cwp_s3_logger.zip'
         # Key is the name of the zip file which contains lambda_function.py
